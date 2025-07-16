@@ -136,7 +136,7 @@ class FastAPIFramework(FrameworkInterface):
             assert self._oauth is not None
             post_login_redirect = request.query_params.get('post_login_redirect_url')
             if post_login_redirect:
-                request.session['post_login_redirect_url'] = post_login_redirect  # type: ignore
+                request.session['post_login_redirect_url'] = post_login_redirect
 
             url=await self._oauth.login({"auth_params": {"supports_reauth": "true"}})
             self._logger.warning(f"[Login] Session is: {request.session}")
@@ -207,7 +207,7 @@ class FastAPIFramework(FrameworkInterface):
             assert self._oauth is not None
             post_login_redirect = request.query_params.get('post_login_redirect_url')
             if post_login_redirect:
-                request.session['post_login_redirect_url'] = post_login_redirect  # type: ignore
+                request.session['post_login_redirect_url'] = post_login_redirect
 
             passed_state = request.query_params.get('state')
             if passed_state:
@@ -218,7 +218,7 @@ class FastAPIFramework(FrameworkInterface):
                 "auth_params": {"supports_reauth": "true"}
             }
             if passed_state:
-                login_options["state"] = passed_state
+                login_options["state"] = passed_state  # type: ignore
 
             return RedirectResponse(url=await self._oauth.register(login_options))
         
