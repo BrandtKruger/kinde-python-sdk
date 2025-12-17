@@ -23,6 +23,8 @@ If you're upgrading from Kinde Python SDK v1, **the API has changed significantl
 
 For details on integrating this SDK into your project, head over to the [Kinde docs](https://kinde.com/docs/) and see the [Python SDK](https://kinde.com/docs/developer-tools/python-sdk/) doc 👍🏼.
 
+**📖 [Comprehensive Async/Sync Architecture Guide](ASYNC_SYNC_GUIDE.md)** - Complete guide for using OAuth, AsyncOAuth, and SmartOAuth clients
+
 ## Basic Usage: Framework Integrations
 
 The Kinde Python SDK provides seamless integration with popular Python web frameworks. Below are detailed guides for using Kinde with FastAPI and Flask.
@@ -39,27 +41,31 @@ pip install fastapi uvicorn python-multipart
 
 #### Basic Setup
 
+For FastAPI applications, we recommend using `AsyncOAuth` for optimal async performance:
+
 ```python
 from fastapi import FastAPI
-from kinde_sdk.auth.oauth import OAuth
+from kinde_sdk import AsyncOAuth
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# Initialize Kinde OAuth with FastAPI framework
-kinde_oauth = OAuth(
+# Initialize Kinde AsyncOAuth with FastAPI framework
+kinde_oauth = AsyncOAuth(
     framework="fastapi",
     app=app
 )
 
 # Example home route
 @app.get("/")
-async def home(request: Request):
+async def home():
     if kinde_oauth.is_authenticated():
-        user = kinde_oauth.get_user_info()
-        return f"Welcome, {user.get('email', 'User')}!"
-    return "Please log in"
+        user = await kinde_oauth.get_user_info_async()
+        return {"message": f"Welcome, {user.get('email', 'User')}!"}
+    return {"message": "Please log in"}
 ```
+
+> **Note**: You can also use `OAuth` (sync) or `SmartOAuth` (context-aware) with FastAPI. See the [Async/Sync Architecture Guide](ASYNC_SYNC_GUIDE.md) for details.
 
 #### Configuration
 
